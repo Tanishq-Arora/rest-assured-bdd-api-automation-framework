@@ -34,7 +34,7 @@
 23. [API Testing Validation Pyramid](#23-api-testing-validation-pyramid)
 24. [Production-Grade API Test](#24-production-grade-api-test)
 25. [REST Assured Example](#25-rest-assured-example)
-26. [Senior API Testing Mindset](#26-senior-api-testing-mindset)
+26. [Seasoned API Testing Mindset](#26-seasoned-api-testing-mindset)
 27. [HTTP Request Testing Checklist](#27-http-request-testing-checklist)
 28. [HTTP Response Testing Checklist](#28-http-response-testing-checklist)
 29. [Negative Testing](#29-negative-testing)
@@ -45,6 +45,7 @@
 34. [Common API Testing Mistakes](#34-common-api-testing-mistakes)
 35. [Senior-Level API Testing Principles](#35-senior-level-api-testing-principles)
 36. [Final API Testing Mental Model](#36-final-api-testing-mental-model)
+37. [Some Contextual Self Notes](#37-some-contextual-self-notes)
 
 ---
 
@@ -2699,32 +2700,185 @@ concurrent, slow, failed and unexpected conditions?"
 That is the mindset required for **API testing expertise**.
 
 
-````text
-1. Status checks plus schema validation reveals contract and business issues.
 
-2. Resource = Noun, Resource representations - JSON as payload, Statelessness -> Statelessness means each client request must contain all information necessary for
-            the server to process it. The server does not rely on client-specific session state stored from previous requests. 
-            This allows requests to be processed independently and makes horizontal scaling easier. , Uniform Interface which uses HTTP verbs consistently
+# 37. Some Contextual Self Notes
 
-3. How to maintain state for REST if it is stateless -> 
-    We maintain business state in persistent or shared stores such as databases and caches, 
-    while keeping the API interaction stateless by ensuring every request carries the context 
-    required to process it—for example, an access token, resource ID, query parameters, or request metadata. 
-    This allows any API instance behind a load balancer to process any request without relying on its local session memory.
-    Common places for state ->
-    | State                  | Typical Location         |
-    | ---------------------- | ------------------------ |
-    | Authentication context | JWT/access token         |
-    | User data              | Database                 |
-    | Order state            | Database                 |
-    | Cart                   | Database/cache           |
-    | Temporary data         | Cache                    |
-    | Async workflow         | Database/message broker  |
-    | UI state               | Client                   |
-    | Request correlation    | Header                   |
-    | Pagination context     | Request parameters/token |
+1. API Validation Strategy
+   Status code validation tells us whether the request was processed as expected,
+   while response-body and schema validation verify the response contract and
+   business behavior.
 
-4. RestAssured is Java domain specific language for HTTP and Assertions.
-5. Given When & Then is nothing but Arrange-Act-Assert
-6. Enable conditional Logging for failures only
-7. Log Minimal Request Detail in shared specs
+   Status validation + schema validation + business assertions together provide
+   stronger API coverage.
+
+   Example:
+   201 → HTTP-level validation
+   JSON schema → Contract validation
+   completed = false → Business validation
+
+
+2. Core REST Principles
+
+   • Resource
+     A resource represents a business entity and is identified by a URI.
+     Example:
+       /users
+       /orders
+       /tasks/{taskId}
+
+   • Resource Representation
+     A representation is the format in which a resource is transferred between
+     client and server. JSON is the most commonly used representation in REST APIs.
+
+   • Statelessness
+     Each client request must contain all the information required by the server
+     to process that request.
+
+     The server does not depend on client-specific session state stored from
+     previous requests.
+
+     This allows requests to be processed independently and makes horizontal
+     scaling easier because any API instance can handle any request.
+
+   • Uniform Interface
+     REST APIs follow a consistent interface using standard HTTP semantics.
+
+     GET     → Retrieve
+     POST    → Create
+     PUT     → Replace
+     PATCH   → Partially update
+     DELETE  → Delete
+
+
+3. How Do You Maintain State If REST Is Stateless?
+
+   REST statelessness means the SERVER does not maintain client-session state
+   between requests. It does NOT mean that the application cannot have state.
+
+   Business state is persisted in external/shared systems such as databases,
+   caches, or message brokers.
+
+   The client sends the context required to process each request, such as:
+
+   • Access token
+   • Resource ID
+   • Query parameters
+   • Request body
+   • Headers
+   • Correlation ID
+
+   Example:
+
+       Client
+         │
+         │ Authorization: Bearer <token>
+         │ GET /orders/123
+         ▼
+       Load Balancer
+         │
+         ├──────────► API Instance A
+         │
+         └──────────► API Instance B
+
+   Either API instance can process the request because the required context is
+   carried by the request and persistent state is stored outside the instance.
+
+   Common state locations:
+
+   | State                  | Typical Location        |
+   |------------------------|-------------------------|
+   | Authentication context | JWT / access token      |
+   | User data              | Database                |
+   | Order state            | Database                |
+   | Cart                   | Database / Cache        |
+   | Temporary data         | Cache                   |
+   | Async workflow state   | Database / Message Bus  |
+   | UI state               | Client                  |
+   | Request correlation    | HTTP Header             |
+   | Pagination context     | Request Parameter/Token |
+
+
+4. What Is Rest Assured?
+
+   Rest Assured is a Java DSL for testing REST APIs.
+
+   It provides a fluent syntax for:
+
+   • Building HTTP requests
+   • Sending requests
+   • Validating responses
+   • Extracting response data
+   • Performing assertions
+   • Serializing/deserializing request and response objects
+   • Logging requests and responses
+
+   Typical structure:
+
+       given()   → Arrange / Request setup
+       when()    → Execute HTTP request
+       then()    → Validate response
+
+
+5. Given / When / Then vs Arrange / Act / Assert
+
+   They represent essentially the same testing concept.
+
+   Given → Arrange
+   When  → Act
+   Then  → Assert
+
+   Example:
+
+       Given I have a valid task request
+       When I create the task
+       Then the response status should be 201
+
+
+6. Conditional Logging
+
+   Avoid logging complete request and response details for every successful
+   request in large suites.
+
+   Prefer conditional logging, especially in CI/CD:
+
+       • Log full request/response details on failure
+       • Keep successful execution logs minimal
+       • Enable detailed logging when debugging
+
+   Benefits:
+
+       • Cleaner CI/CD logs
+       • Lower log volume
+       • Better readability
+       • Reduced storage cost
+       • Easier failure analysis
+
+
+7. Minimal Logging in Shared Specifications
+
+   Shared request/response specifications should contain only logging that is
+   genuinely useful across the framework.
+
+   Prefer:
+
+       Request  → Method + URI + essential metadata
+       Response → Status + essential response information
+
+   For failures, enable complete request/response logging.
+
+   Avoid globally logging sensitive information such as:
+
+       • Authorization tokens
+       • Passwords
+       • API keys
+       • Personal/sensitive data
+
+   Recommended strategy:
+
+       Normal execution
+              ↓
+       Minimal logging
+              ↓
+       Failure
+              ↓
+       Detailed request/response logging
