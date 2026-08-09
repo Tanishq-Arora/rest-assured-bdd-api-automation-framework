@@ -1,88 +1,286 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="
+            http://maven.apache.org/POM/4.0.0
+            https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- ====================================================== -->
+    <!-- PROJECT                                                -->
+    <!-- ====================================================== -->
 
     <groupId>testing.api</groupId>
     <artifactId>rest-assured</artifactId>
     <version>1.0.0</version>
-    <packaging>pom</packaging>
-    <name>API testing using rest assured and AI</name>
+    <packaging>jar</packaging>
+
+    <name>API Testing Using Rest Assured and AI</name>
+
+
+    <!-- ====================================================== -->
+    <!-- PROPERTIES                                             -->
+    <!-- ====================================================== -->
 
     <properties>
+
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- API Testing -->
         <rest-assured.version>6.0.0</rest-assured.version>
-        <junit.version>5.12.2</junit.version>
-        <gson.version>2.13.2</gson.version>
+
+        <!-- Serialization -->
+        <jackson.version>2.19.2</jackson.version>
+
+        <!-- Test Data -->
+        <javafaker.version>1.0.2</javafaker.version>
+
+        <!-- Lombok -->
+        <lombok.version>1.18.38</lombok.version>
+
+        <!-- Assertions -->
         <assertj.version>3.27.4</assertj.version>
+
+        <!-- Cucumber -->
+        <cucumber.version>7.20.1</cucumber.version>
+
+        <!-- JUnit -->
+        <junit.jupiter.version>5.11.4</junit.jupiter.version>
+        <junit.platform.version>1.11.4</junit.platform.version>
+
+        <!-- Serenity -->
+        <serenity.version>4.2.16</serenity.version>
+
     </properties>
 
+
+    <!-- ====================================================== -->
+    <!-- DEPENDENCIES                                           -->
+    <!-- ====================================================== -->
+
     <dependencies>
+
+        <!-- ================================================== -->
+        <!-- REST ASSURED                                       -->
+        <!-- ================================================== -->
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
-            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-schema-validator</artifactId>
             <version>${rest-assured.version}</version>
-            <scope>test</scope>
         </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- JACKSON                                             -->
+        <!-- ================================================== -->
+
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
-            <scope>test</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- JAVA FAKER                                          -->
+        <!-- ================================================== -->
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${javafaker.version}</version>
+        </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- LOMBOK                                              -->
+        <!-- ================================================== -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- ASSERTJ                                             -->
+        <!-- ================================================== -->
+
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>6.0.0</version>
-            <scope>compile</scope>
-        </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- JUNIT 5                                              -->
+        <!-- ================================================== -->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.12.2</version>
-            <scope>compile</scope>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- CUCUMBER                                            -->
+        <!-- ================================================== -->
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- ================================================== -->
+        <!-- SERENITY BDD                                        -->
+        <!-- ================================================== -->
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-core</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
+
+    <!-- ====================================================== -->
+    <!-- BUILD                                                  -->
+    <!-- ====================================================== -->
+
     <build>
+
         <plugins>
+
+            <!-- ================================================== -->
+            <!-- COMPILER                                           -->
+            <!-- ================================================== -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+
                 <configuration>
-                    <useModulePath>false</useModulePath>
-                    <trimStackTrace>false</trimStackTrace>
-                    <systemPropertyVariables>
-                        <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
-                    </systemPropertyVariables>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
+
+
+            <!-- ================================================== -->
+            <!-- FAILSAFE - CUCUMBER / SERENITY                     -->
+            <!-- ================================================== -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.5.4</version>
+
+                <configuration>
+
+                    <includes>
+                        <include>**/TestRunner.java</include>
+                    </includes>
+
+                    <systemPropertyVariables>
+                        <junit.jupiter.execution.parallel.enabled>
+                            false
+                        </junit.jupiter.execution.parallel.enabled>
+                    </systemPropertyVariables>
+
+                </configuration>
+
+                <executions>
+
+                    <execution>
+                        <id>cucumber-tests</id>
+
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
+
+            <!-- ================================================== -->
+            <!-- SERENITY REPORT                                    -->
+            <!-- ================================================== -->
+
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.version}</version>
+
+                <executions>
+
+                    <execution>
+                        <id>serenity-report</id>
+                        <phase>post-integration-test</phase>
+
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
         </plugins>
+
     </build>
+
 </project>
